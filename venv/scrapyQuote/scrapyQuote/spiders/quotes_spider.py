@@ -1,4 +1,5 @@
 from urllib import response
+
 import scrapy
 from ..items import ScrapyquoteItem
 
@@ -28,5 +29,9 @@ class scrapyQuotes(scrapy.Spider):
             # send the response to pipeline to store in database
             # or u can save it in csv by running scrapy crawl -o items.csv 
             yield items
-           
-           
+
+        #  get next pages   
+        next_page = response.css('li.next a::attr(href)').get()
+
+        if next_page is not None:
+            yield response.follow(next_page, callback =self.parse)
